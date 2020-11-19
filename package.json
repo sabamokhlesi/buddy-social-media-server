@@ -1,0 +1,29 @@
+{
+  "name": "buddy-server",
+  "version": "1.0.0",
+  "description": "the rest API server of social media app 'Buddy' ",
+  "main": "index.js",
+  "scripts": {
+    "start-server": "node app.js",
+    "start:dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Saba Mokhlesi",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "csurf": "^1.11.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "helmet": "^4.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.15",
+    "multer": "^1.4.2"
+  }
+}
