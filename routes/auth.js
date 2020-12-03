@@ -14,8 +14,10 @@ router.put(
         return User.findOne({ email: value }).then(userDoc => {if (userDoc) {return Promise.reject('E-Mail address already exists!');}
         });
       }),
-    body('firstName').trim().not().isEmpty(),
-    body('lastName').trim().not().isEmpty(),
+    body('userName').trim().not().isEmpty().custom((value, { req }) => {
+      return User.findOne({ userName: value }).then(userDoc => {if (userDoc) {return Promise.reject('username already exists!');}
+      });
+    }),
     body('password').trim().isLength({ min: 6 })
   ],
   authController.signup
