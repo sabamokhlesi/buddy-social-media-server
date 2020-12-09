@@ -21,10 +21,11 @@ exports.signup = (req, res, next) => {
         const user = new User({
           email: email,
           password: hashedPw,
-          userName:userName,
           userInfo:{
+            userName:userName,
             bio:'',
             name:'',
+            avatarImgUrl:'',
             posts:[],
             followers: [],
             followings: [],

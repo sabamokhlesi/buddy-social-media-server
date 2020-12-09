@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const postSchema = new Schema(
   {
-    date:{createdAt: {type:Date, default:Date.now}},
+    createdAt: {type:Date, default:Date.now},
     caption:{type: String},
     imageUrl:{type: String,required: true},
     creator: {type: Schema.Types.ObjectId, ref:'User',required: true},

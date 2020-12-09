@@ -7,11 +7,7 @@ const isAuth = require('../middleware/is-auth');
 const router = express.Router();
 
 // POST /account/post
-router.post(
-  '/post',
-  isAuth,
-  account.createPost
-);
+router.post('/post',isAuth,account.createPost)
 
 // router.put(
 //   '/transaction',
@@ -30,11 +26,11 @@ router.post(
 
 // router.delete('/transaction/:transactionId', isAuth,budgetController.deleteTransaction);
 
-// router.get('/budget-info/:userId',isAuth,budgetController.getUserBudgetInfo)
-// router.put('/budget-info/:userId',isAuth,budgetController.updateUserBudgetInfo)
+router.get('/user-info/:userId',isAuth,account.getUserInfo)
+router.put('/user-info/:userId',isAuth,account.updateUserInfo)
 
 // // GET /budget-manager/transactions
-// router.get('/transactions/:userId', isAuth, budgetController.getTransactions);
+router.get('/posts/:userId', isAuth, account.getPosts);
 // router.get('/transaction/:transactionId',isAuth, budgetController.getTransaction);
 
 module.exports = router;

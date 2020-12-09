@@ -11,14 +11,14 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 
-const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'images');
-  },
-  filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + '-' + file.originalname);
-  }
-});
+// const fileStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'images');
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, new Date().toISOString() + '-' + file.originalname);
+//   }
+// });
 
 const fileFilter = (req, file, cb) => {
   if (
@@ -40,7 +40,7 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({
+const uploadImg = multer({
   storage: storage,
   fileFilter: fileFilter
 
@@ -49,7 +49,7 @@ const upload = multer({
 
 // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
-app.use(upload)
+app.use(uploadImg)
 // app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
