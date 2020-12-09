@@ -19,7 +19,7 @@ exports.createPost = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  const imageUrl = req.file.path;
+  const imageUrl = 'images/'+req.file.path.slice(7);
   const caption = req.body.caption;
   let creator;
   const post = new Post({
@@ -235,7 +235,7 @@ exports.createPost = (req, res, next) => {
 
   exports.updateUserInfo = (req,res,next)=>{
     const userId = req.params.userId
-    const avatarImgUrl = req.file?req.file.path:'';
+    const avatarImgUrl = req.file?'images/'+req.file.path.slice(7):'';
     const name = req.body.name;
     const bio = req.body.bio
     User.findById(userId)
