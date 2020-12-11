@@ -6,6 +6,11 @@ const { validationResult } = require('express-validator');
 const Post = require('../models/post');
 const User = require('../models/user');
 
+const clearImage = filePath => {
+  filePath = path.join(__dirname, '..', filePath);
+  fs.unlink(filePath, err => console.log(err));
+};
+
 exports.createPost = (req, res, next) => {
   const errors = validationResult(req);
   // console.log(req)
@@ -53,46 +58,49 @@ exports.createPost = (req, res, next) => {
     });
 };
 
-//   exports.deleteTransaction = (req, res, next) => {
-//     const transactionId = req.params.transactionId;
-//     let userId
-//     Transaction.findById(transactionId)
-//       .then(transaction => {
-//         if (!transaction) {
-//           const error = new Error('Could not find transaction.');
-//           error.statusCode = 404;
-//           throw error;
-//         }
-//         userId = transaction.userId.toString()
-//         if (!userId) {
-//           const error = new Error('Not authorized!');
-//           error.statusCode = 403;
-//           throw error;
-//         }
-//         return Transaction.findByIdAndRemove(transactionId);
-//       })
-//       .then(result => {
-//         return User.findById(userId);
-//       })
-//       .then(user => {
-//         user.transactions.pull(transactionId);
-//         return user.save();
-//       })
-//       .then(result => {
-//         res.status(200).json({ message: 'Deleted transaction.' });
-//       })
-//       .catch(err => {
-//         if (!err.statusCode) {
-//           err.statusCode = 500;
-//         }
-//         next(err);
-//       });
-//   };
+  exports.deletePost = (req, res, next) => {
+    const postId = req.params.postId;
+    let userId
+    Post.findById(postId)
+      .then(post => {
+        if (!post) {
+          const error = new Error('Could not find post.');
+          error.statusCode = 404;
+          throw error;
+        }
+        userId = post.creator.toString()
+        if (!userId) {
+          const error = new Error('Not authorized!');
+          error.statusCode = 403;
+          throw error;
+        } else {
+          clearImage(post.imageUrl)
+        }
+        return Post.findByIdAndRemove(postId);
+      })
+      .then(result => {
+        // User.update( 
+        //   {_id: userId}, 
+        //   { userInfo:{$pull: {posts: postId} } }
+        // )
+        return User.findById(userId);
+      })
+      .then(user => {
+        user.userInfo.posts.pull(postId);
+        return user.save();
+      })
+      .then(result => {
+        res.status(200).json({ message: 'Deleted post.' });
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  };
   
-//   const clearImage = filePath => {
-//     filePath = path.join(__dirname, '..', filePath);
-//     fs.unlink(filePath, err => console.log(err));
-//   };
+
 
 // exports.updateTransaction = (req, res, next) => {
 //     const transactionId = req.body._id;
@@ -247,6 +255,7 @@ exports.createPost = (req, res, next) => {
       }
       user.userInfo.bio = bio
       user.userInfo.name = name
+      avatarImgUrl!==''?clearImage(user.userInfo.avatarImgUrl):null
       avatarImgUrl!==''?user.userInfo.avatarImgUrl = avatarImgUrl:null
       return user.save()
     })
@@ -263,3 +272,25 @@ exports.createPost = (req, res, next) => {
       next(err);
     });
   }
+
+  exports.likeDislikePost = (req, res, next) => {
+    const action = req.query.action
+    const userId = req.query.userId
+    const postId = req.params.postId
+    
+    Post.update( 
+      {_id: postId}, 
+      action!=='like'?
+      { $pull: {likes: userId } }
+      :{ $push: {likes: userId } }
+    )
+      .then(result => {
+        res.status(200).json({ message: action+'successfull!'});
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  };

@@ -9,22 +9,9 @@ const router = express.Router();
 // POST /account/post
 router.post('/post',isAuth,account.createPost)
 
-// router.put(
-//   '/transaction',
-//   isAuth,
-//   [
-//     body('title').trim().isLength({ min: 1 }),
-//     body('amount').trim().isLength({ min: 1 }),
-//     body('category').trim().isLength({ min: 1 }),
-//     body('date').trim().isLength({ min: 1 }),
-//     body('person').trim().isLength({ min: 1 }),
-//     body('type').trim().isLength({ min: 1 }),
-//     body('userId').trim().isLength({ min: 1 })
-//   ],
-//   budgetController.updateTransaction
-// );
+router.put('/post/:postId',isAuth,account.likeDislikePost);
 
-// router.delete('/transaction/:transactionId', isAuth,budgetController.deleteTransaction);
+router.delete('/post/:postId', isAuth,account.deletePost);
 
 router.get('/user-info/:userId',isAuth,account.getUserInfo)
 router.put('/user-info/:userId',isAuth,account.updateUserInfo)
