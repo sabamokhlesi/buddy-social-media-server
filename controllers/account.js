@@ -100,7 +100,34 @@ exports.createPost = (req, res, next) => {
       });
   };
   
-
+  exports.postComment = (req, res, next) => {
+    const postId = req.params.postId
+    const userId = req.body.userId
+    const comment = req.body.comment
+    
+    Post.findById(postId)
+    .then(post => {
+      if (!post) {
+        const error = new Error('post not found.');
+        error.statusCode = 401;
+        throw error;
+      }
+      post.comments.push({userId:userId,content:comment})
+      return post.save()
+    })
+      .then(result => {
+        res.status(201).json({
+          message: 'Comment added successfully!',
+          _id: result._id.toString()
+        });
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  };
 
 // exports.updateTransaction = (req, res, next) => {
 //     const transactionId = req.body._id;
@@ -197,15 +224,14 @@ exports.createPost = (req, res, next) => {
           }
         totalItems = count;
         return Post.find({creator:userId}).sort({ createdAt: -1 })
-
+        .populate('comments.userId',['userInfo.userName','userInfo.avatarImgUrl','userInfo.name'])
           // .skip((currentPage - 1) * perPage)
           // .limit(perPage);
       })
-      .then(posts => {
+      .then(updatedPosts => {
         res.status(200).json({
           message: 'Fetched posts successfully.',
-          posts: posts,
-          totalItems: totalItems
+          posts: updatedPosts
         });
       })
       .catch(err => {

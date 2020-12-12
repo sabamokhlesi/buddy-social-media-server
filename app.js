@@ -8,6 +8,7 @@ const helmet =require("helmet")
 const compression = require('compression')
 const accountRoutes = require('./routes/account');
 const authRoutes = require('./routes/auth');
+const feed = require('./controllers/feed')
 
 const app = express();
 
@@ -62,6 +63,7 @@ app.use((req, res, next) => {
 
 app.use('/account', accountRoutes);
 app.use('/auth', authRoutes);
+app.post('/:userName',feed.getUser)
 app.use(helmet())
 app.use(compression())
 

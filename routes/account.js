@@ -8,7 +8,7 @@ const router = express.Router();
 
 // POST /account/post
 router.post('/post',isAuth,account.createPost)
-
+router.post('/comment/:postId',isAuth,account.postComment)
 router.put('/post/:postId',isAuth,account.likeDislikePost);
 
 router.delete('/post/:postId', isAuth,account.deletePost);
@@ -16,7 +16,7 @@ router.delete('/post/:postId', isAuth,account.deletePost);
 router.get('/user-info/:userId',isAuth,account.getUserInfo)
 router.put('/user-info/:userId',isAuth,account.updateUserInfo)
 
-// // GET /budget-manager/transactions
+// // GET /account
 router.get('/posts/:userId', isAuth, account.getPosts);
 // router.get('/transaction/:transactionId',isAuth, budgetController.getTransaction);
 
