@@ -9,9 +9,9 @@ const userSchema = new Schema({
     name:{type: String},
     bio:{type: String},
     avatarImgUrl:{type:String},
-    posts:[{type: Schema.Types.ObjectId,ref:'Posts'}],
-    followers: [{type: Schema.Types.ObjectId,ref:'Users'}],
-    followings: [{type: Schema.Types.ObjectId,ref:'Users'}],
+    posts:[{type: Schema.Types.ObjectId,ref:'Post'}],
+    follower: [{type: Schema.Types.ObjectId,ref:'User'}],
+    followings: [{type: Schema.Types.ObjectId,ref:'User'}],
   }
 });
 

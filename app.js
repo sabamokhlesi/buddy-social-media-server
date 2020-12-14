@@ -63,7 +63,7 @@ app.use((req, res, next) => {
 
 app.use('/account', accountRoutes);
 app.use('/auth', authRoutes);
-app.post('/:userName',feed.getUser)
+app.get('/users/:userName',feed.getUser)
 app.use(helmet())
 app.use(compression())
 
