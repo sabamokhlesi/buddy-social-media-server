@@ -224,6 +224,7 @@ exports.createPost = (req, res, next) => {
           }
         totalItems = count;
         return Post.find({creator:userId}).sort({ createdAt: -1 })
+        .populate('creator',['userInfo'])
         .populate('comments.userId',['userInfo.userName','userInfo.avatarImgUrl','userInfo.name'])
           // .skip((currentPage - 1) * perPage)
           // .limit(perPage);

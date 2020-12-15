@@ -13,12 +13,26 @@ exports.getUser =(req,res,next) =>{
     .populate('userInfo.posts')
     .populate('userInfo.followers',['userInfo.userName','userInfo.avatarImgUrl','userInfo.name'])
     .populate('userInfo.followings',['userInfo.userName','userInfo.avatarImgUrl','userInfo.name'])
+    .populate({
+        path : 'userInfo.posts',
+        populate : {
+          path : 'comments.userId',
+          select: ['userInfo.userName','userInfo.avatarImgUrl','userInfo.name']
+        }
+      })
+    .populate({
+        path : 'userInfo.posts',
+        populate : {
+            path : 'creator',
+            select: ['userInfo']
+        }
+    })
     .populate('userInfo.posts.comments.userId',['userInfo.userName','userInfo.avatarImgUrl','userInfo.name'])
     // .then(info=>console.log(info))
     .then(user=>
         res.status(200).json({
             message: 'Fetched user successfully.',
-            userInfo:user.userInfo
+            userInfo:{...user.userInfo,_id:user._id.toString()}
         })
     )
     .catch(err => {
