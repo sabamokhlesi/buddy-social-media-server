@@ -10,6 +10,7 @@ const router = express.Router();
 router.post('/post',isAuth,account.createPost)
 router.post('/comment/:postId',isAuth,account.postComment)
 router.put('/post/:postId',isAuth,account.likeDislikePost);
+router.put('/followings/:userId',isAuth,account.followUnfollowUser)
 
 router.delete('/post/:postId', isAuth,account.deletePost);
 

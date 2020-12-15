@@ -321,3 +321,31 @@ exports.createPost = (req, res, next) => {
         next(err);
       });
   };
+
+  exports.followUnfollowUser = (req, res, next) => {
+    const action = req.query.action
+    const userId = req.params.userId
+    const followingUserId = req.query.followingUserId
+    
+    User.update( 
+      {_id: userId}, 
+      action!=='follow'?
+      { $pull: {'userInfo.followings': followingUserId } }
+      :{ $push: {'userInfo.followings': followingUserId } }
+    )
+    User.update( 
+      {_id: followingUserId}, 
+      action!=='follow'?
+      { $pull: {'userInfo.followers': userId } }
+      :{ $push: {'userInfo.followers': userId } }
+    )
+      .then(result => {
+        res.status(200).json({ message: action+'successfull!'});
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+  };
