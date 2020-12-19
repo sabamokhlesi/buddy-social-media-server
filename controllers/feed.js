@@ -28,7 +28,6 @@ exports.getUser =(req,res,next) =>{
         }
     })
     // .populate('userInfo.posts.comments.userId',['userInfo.userName','userInfo.avatarImgUrl','userInfo.name'])
-    // .then(info=>console.log(info))
     .then(user=>
         res.status(200).json({
             message: 'Fetched user successfully.',
@@ -43,11 +42,24 @@ exports.getUser =(req,res,next) =>{
       });
 }
 
+
+exports.findUsers = (req,res,next)=>{
+  const searchedKey = req.params.searchedKey
+  User.find({$or:[{'userInfo.userName': { "$regex": searchedKey, "$options": "i" }},{'userInfo.name':{ "$regex": searchedKey, "$options": "i" }}]},
+    ['userInfo.name','userInfo.avatarImgUrl','userInfo.userName','_id'])
+  .then(result=>{
+    res.status(200).json({message:'searched successfully.',users:result})
+  })
+  .catch(err => {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+
+  })
+  
+}
 exports.getFeedPosts = (req, res, next) => {
-  // const currentPage = req.query.page || 1;
-  // const perPage = 50;
-  // const fromDate = req.query.fromDate
-  // const toDate = req.query.toDate
   const userId = req.params.userId
   let totalItems;
   User.find({'userInfo.followers':userId})
