@@ -5,6 +5,7 @@ const { validationResult } = require('express-validator');
 
 const Post = require('../models/post');
 const User = require('../models/user');
+const user = require('../models/user');
 
 const clearImage = filePath => {
   filePath = path.join(__dirname, '..', filePath);
@@ -246,6 +247,8 @@ exports.createPost = (req, res, next) => {
   exports.getUserInfo = (req,res,next)=>{
     const userId = req.params.userId
     User.findById(userId)
+    .populate('userInfo.followers',['userInfo.userName','userInfo.avatarImgUrl','userInfo.name'])
+    .populate('userInfo.followings',['userInfo.userName','userInfo.avatarImgUrl','userInfo.name'])
     .then(user => {
       if (!user) {
         const error = new Error('user not found.');
@@ -254,6 +257,7 @@ exports.createPost = (req, res, next) => {
       }
       return user.userInfo
     })
+    
     .then(userInfo => {
       res.status(200).json({
         message: 'Fetched user information successfully.',
@@ -326,19 +330,29 @@ exports.createPost = (req, res, next) => {
     const action = req.query.action
     const userId = req.params.userId
     const followingUserId = req.query.followingUserId
-    
-    User.update( 
-      {_id: userId}, 
-      action!=='follow'?
-      { $pull: {'userInfo.followings': followingUserId } }
-      :{ $push: {'userInfo.followings': followingUserId } }
+    User.findById(userId)
+    .then(user=>{
+      if(action === 'follow' && user.userInfo.followings.includes(followingUserId)){
+        const error = new Error('already following the user.');
+        error.statusCode = 401;
+        throw error;
+      } else {return user}
+    })
+    .then(result=>
+      User.updateOne( 
+        {_id: followingUserId}, 
+        action!=='follow'?
+        { $pull: {'userInfo.followers': userId } }
+        :{ $push: {'userInfo.followers': userId } })
     )
-    User.update( 
-      {_id: followingUserId}, 
-      action!=='follow'?
-      { $pull: {'userInfo.followers': userId } }
-      :{ $push: {'userInfo.followers': userId } }
-    )
+      .then(result=>
+      User.updateOne( 
+        {_id: userId}, 
+        action!=='follow'?
+        { $pull: {'userInfo.followings': followingUserId } }
+        :{ $push: {'userInfo.followings': followingUserId } }
+      )
+      )
       .then(result => {
         res.status(200).json({ message: action+'successfull!'});
       })

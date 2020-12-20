@@ -10,8 +10,8 @@ const userSchema = new Schema({
     bio:{type: String},
     avatarImgUrl:{type:String},
     posts:[{type: Schema.Types.ObjectId,ref:'Post'}],
-    followers: [{type: Schema.Types.ObjectId,ref:'User'}],
-    followings: [{type: Schema.Types.ObjectId,ref:'User'}],
+    followers: [{type: Schema.Types.ObjectId,ref:'User',unique: true}],
+    followings: [{type: Schema.Types.ObjectId,ref:'User',unique: true}],
   }
 });
 
