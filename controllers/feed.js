@@ -66,7 +66,6 @@ exports.getSuggestedUsers = (req,res,next)=>{
     ['userInfo.name','userInfo.avatarImgUrl','userInfo.userName','_id','userInfo.followings'])
   .then(users=>{
     users.filter(user=>user._id !== userId || !user.userInfo.followings.includes(userId))
-    console.log(users)
     res.status(200).json({message:'Got suggested users successfully.',users:users})
   })
   .catch(err => {

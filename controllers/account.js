@@ -14,7 +14,6 @@ const clearImage = filePath => {
 
 exports.createPost = (req, res, next) => {
   const errors = validationResult(req);
-  // console.log(req)
   if (!errors.isEmpty()) {
     const error = new Error('Validation failed, entered data is incorrect.');
     error.statusCode = 422;
