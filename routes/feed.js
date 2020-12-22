@@ -9,5 +9,6 @@ const router = express.Router();
 router.get('/users/:userName',feed.getUser)
 router.get('/posts/:userId',isAuth,feed.getFeedPosts)
 router.get('/search-users/:searchedKey',isAuth,feed.findUsers)
+router.get('/get-users/:userId',isAuth,feed.getSuggestedUsers)
 
 module.exports = router;

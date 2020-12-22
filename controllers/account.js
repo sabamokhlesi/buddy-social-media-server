@@ -47,7 +47,7 @@ exports.createPost = (req, res, next) => {
     .then(result => {
       res.status(201).json({
         message: 'Post created successfully!',
-        post: post,
+        post: {...post._doc,creator:{_id: creator._id,userInfo:creator.userInfo}},
         creator: { _id: creator._id, userName: creator.userName }
       });
     })

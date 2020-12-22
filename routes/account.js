@@ -19,6 +19,5 @@ router.put('/user-info/:userId',isAuth,account.updateUserInfo)
 
 // // GET /account
 router.get('/posts/:userId', isAuth, account.getPosts);
-// router.get('/transaction/:transactionId',isAuth, budgetController.getTransaction);
 
 module.exports = router;

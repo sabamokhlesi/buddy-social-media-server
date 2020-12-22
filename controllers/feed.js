@@ -5,6 +5,7 @@ const { validationResult } = require('express-validator');
 
 const Post = require('../models/post');
 const User = require('../models/user');
+const { userInfo } = require('os');
 
 
 exports.getUser =(req,res,next) =>{
@@ -57,8 +58,26 @@ exports.findUsers = (req,res,next)=>{
     next(err);
 
   })
-  
 }
+
+exports.getSuggestedUsers = (req,res,next)=>{
+  const userId = req.params.userId
+  User.find({$and:[{_id: { $ne: userId }},{'userInfo.followers':{ $ne: userId }}]},
+    ['userInfo.name','userInfo.avatarImgUrl','userInfo.userName','_id','userInfo.followings'])
+  .then(users=>{
+    users.filter(user=>user._id !== userId || !user.userInfo.followings.includes(userId))
+    console.log(users)
+    res.status(200).json({message:'Got suggested users successfully.',users:users})
+  })
+  .catch(err => {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+
+  })
+}
+
 exports.getFeedPosts = (req, res, next) => {
   const userId = req.params.userId
   let totalItems;
