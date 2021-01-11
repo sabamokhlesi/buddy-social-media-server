@@ -12,6 +12,7 @@ const userSchema = new Schema({
     posts:[{type: Schema.Types.ObjectId,ref:'Post'}],
     followers: [{type: Schema.Types.ObjectId,ref:'User',unique: true}],
     followings: [{type: Schema.Types.ObjectId,ref:'User',unique: true}],
+    commentsLeft:[{type: Schema.Types.ObjectId,ref:'Post'}]
   }
 });
 

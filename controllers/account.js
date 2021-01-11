@@ -104,8 +104,10 @@ exports.createPost = (req, res, next) => {
     const postId = req.params.postId
     const userId = req.body.userId
     const comment = req.body.comment
-    
-    Post.findById(postId)
+    User.updateOne( 
+      {_id: userId},
+      { $push: {'userInfo.commentsLeft': postId } })
+    .then(result=>Post.findById(postId))
     .then(post => {
       if (!post) {
         const error = new Error('post not found.');
@@ -270,7 +272,7 @@ exports.createPost = (req, res, next) => {
         action!=='follow'?
         { $pull: {'userInfo.followings': followingUserId } }
         :{ $push: {'userInfo.followings': followingUserId } }
-      )
+        )
       )
       .then(result => {
         res.status(200).json({ message: action+'successfull!'});
